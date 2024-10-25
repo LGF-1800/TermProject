@@ -164,10 +164,10 @@ public class TermProjectFXMLController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
     }    
-@FXML
+ @FXML
     private void handleCalculation(ActionEvent event) throws NumberFormatException {
         try {
-            
+            // Get input values from text fields
             double vVelocity = Double.parseDouble(VVelocityField1.getText()); // Vy
             double hVelocity = Double.parseDouble(HVelocityField.getText()); // Vx
             double gravity = Double.parseDouble(GravAccField.getText()); // g
@@ -175,24 +175,14 @@ public class TermProjectFXMLController implements Initializable {
 
             gravity = Math.abs(gravity); // Ensure gravity is positive
 
-            // Calculate the time of flight using the quadratic formula
-            double discriminant = Math.pow(vVelocity, 2) - 2 * (0.5 * gravity) * -initialHeight;
-            if (discriminant < 0) {
-                throw new ArithmeticException("No real solution for time of flight. Check the input values.");
-            }
-
-            // Time of flight formula: T = [vY ± sqrt(vY^2 - 4 * (1/2 * g) * -h)] / (g/2)
-            double timeOfFlightPositive = (vVelocity + Math.sqrt(discriminant)) / gravity;
-            double timeOfFlightNegative = (vVelocity - Math.sqrt(discriminant)) / gravity;
-
-            double timeOfFlight = Math.max(timeOfFlightPositive, timeOfFlightNegative);
+            double timeOfFlight = (vVelocity + Math.sqrt(Math.pow(vVelocity, 2) + 2 * gravity * initialHeight)) / gravity;
 
             // Calculate horizontal displacement
             double horizontalDisplacement = hVelocity * timeOfFlight;
-
             // Calculate vertical displacement
-            double verticalDisplacement = vVelocity * timeOfFlight - (0.5 * gravity * Math.pow(timeOfFlight, 2));
-            
+            double verticalDisplacement = initialHeight + vVelocity * timeOfFlight - (0.5 * gravity * Math.pow(timeOfFlight, 2));
+
+            // Display results
             HorizontalDisReading.setText(String.format("%.2f", horizontalDisplacement));
             VerticalDisReading.setText(String.format("%.2f", verticalDisplacement));
             TimeReading.setText(String.format("%.2f", timeOfFlight));
