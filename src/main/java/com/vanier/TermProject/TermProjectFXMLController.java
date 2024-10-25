@@ -175,6 +175,7 @@ public class TermProjectFXMLController implements Initializable {
 
             gravity = Math.abs(gravity); // Ensure gravity is positive
 
+            // time of flight = [vy + sqrt(vy^2 + 2*g*h)] / 2 
             double timeOfFlight = (vVelocity + Math.sqrt(Math.pow(vVelocity, 2) + 2 * gravity * initialHeight)) / gravity;
 
             // Calculate horizontal displacement
