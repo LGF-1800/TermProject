@@ -164,7 +164,46 @@ public class TermProjectFXMLController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
     }    
+@FXML
+    private void handleCalculation(ActionEvent event) throws NumberFormatException {
+        try {
+            
+            double vVelocity = Double.parseDouble(VVelocityField1.getText()); // Vy
+            double hVelocity = Double.parseDouble(HVelocityField.getText()); // Vx
+            double gravity = Double.parseDouble(GravAccField.getText()); // g
+            double initialHeight = Double.parseDouble(HeightField.getText()); // h
 
+            gravity = Math.abs(gravity); // Ensure gravity is positive
+
+            // Calculate the time of flight using the quadratic formula
+            double discriminant = Math.pow(vVelocity, 2) - 2 * (0.5 * gravity) * -initialHeight;
+            if (discriminant < 0) {
+                throw new ArithmeticException("No real solution for time of flight. Check the input values.");
+            }
+
+            // Time of flight formula: T = [vY ± sqrt(vY^2 - 4 * (1/2 * g) * -h)] / (g/2)
+            double timeOfFlightPositive = (vVelocity + Math.sqrt(discriminant)) / gravity;
+            double timeOfFlightNegative = (vVelocity - Math.sqrt(discriminant)) / gravity;
+
+            double timeOfFlight = Math.max(timeOfFlightPositive, timeOfFlightNegative);
+
+            // Calculate horizontal displacement
+            double horizontalDisplacement = hVelocity * timeOfFlight;
+
+            // Calculate vertical displacement
+            double verticalDisplacement = vVelocity * timeOfFlight - (0.5 * gravity * Math.pow(timeOfFlight, 2));
+            
+            HorizontalDisReading.setText(String.format("%.2f", horizontalDisplacement));
+            VerticalDisReading.setText(String.format("%.2f", verticalDisplacement));
+            TimeReading.setText(String.format("%.2f", timeOfFlight));
+
+        } catch (NumberFormatException e) {
+            System.out.println("Please enter valid numerical values.");
+        } catch (ArithmeticException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
     @FXML
     private void handleGraphBtn(ActionEvent event) throws Exception {
         try {
@@ -182,6 +221,8 @@ public class TermProjectFXMLController implements Initializable {
 
     @FXML
     private void handleStartBtn(ActionEvent event) {
+
+        handleCalculation(event);
     }
 
     @FXML
