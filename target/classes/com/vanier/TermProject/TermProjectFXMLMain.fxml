@@ -9,6 +9,7 @@
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.shape.Polyline?>
 <?import javafx.scene.shape.Rectangle?>
@@ -222,5 +223,6 @@
       <Line fx:id="VerticalLine3" endX="-33.33331298828125" endY="35.70709228515625" layoutX="1614.0" layoutY="938.0" startX="-33.33331298828125" startY="142.5" />
       <Button fx:id="RewindBtn" layoutX="254.0" layoutY="727.0" mnemonicParsing="false" onAction="#handleRewindBtn" prefHeight="50.0" prefWidth="84.0" text="Confirm" />
       <Button fx:id="AdvanceBtn" layoutX="254.0" layoutY="816.0" mnemonicParsing="false" onAction="#handleAdvanceBtn" prefHeight="50.0" prefWidth="84.0" text="Confirm" />
+      <Pane fx:id="ScenePane" layoutX="430.0" layoutY="103.0" prefHeight="791.0" prefWidth="1426.0" style="-fx-background-color: WHITE; -fx-border-color: BLACK;" />
    </children>
 </AnchorPane>
