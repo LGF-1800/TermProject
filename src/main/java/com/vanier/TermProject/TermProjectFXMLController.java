@@ -205,7 +205,7 @@ public class TermProjectFXMLController implements Initializable {
             hVelocity = Double.parseDouble(HVelocityField.getText()); // Vx
             gravity = Double.parseDouble(GravAccField.getText()); // g
             initialHeight = Double.parseDouble(HeightField.getText()); // h
-            circle.setLayoutY(initialHeight * scale);
+            circle.setLayoutY(initialHeight  * scale + 50);
 
             gravity = Math.abs(gravity); // Ensure gravity is positive
 
