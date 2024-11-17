@@ -176,14 +176,23 @@ public class TermProjectFXMLController implements Initializable {
     private Pane ScenePane;
     
     //i yanked these guys out since they will be super useful
+    @Deprecated
 	private TimelineWrapper timelineWrapper;
+	@Deprecated
 	private Circle circle;
+	@Deprecated
 	private double scale;
+	@Deprecated
 	private double vVelocity;
+	@Deprecated
 	private double hVelocity;
+	@Deprecated
 	private double gravity;
+	@Deprecated
 	private double timeOfFlight;
+	@Deprecated
 	private double initialHeight;
+	@Deprecated
 	private Timeline timeline;
 	
 	//stuff i added 2024-11-16
@@ -203,7 +212,16 @@ public class TermProjectFXMLController implements Initializable {
     		HorizontalDisReading.setText(String.format("%.3f", physics.getHorizontalDisplacement()));
     		TimeReading.setText(String.format("%.3f", newValue.doubleValue()));
     	});
-    }    
+    	
+    	updateFields();
+    }
+
+	private void updateFields() {
+		VVelocityField1.setText(Double.toString(physics.getStartVerticalVelocity()));
+    	HVelocityField.setText(Double.toString(physics.getStartHorizontalVelocity()));
+    	HeightField.setText(Double.toString(physics.getStartHeight()));
+    	GravAccField.setText(Double.toString(physics.getGravitationAcceleration()));
+	}    
     
     @Deprecated //no one should use this. i transported tiba's calculations to the physics class in model
     //except the horizontal and vertical displacements they kinda dont work
@@ -242,6 +260,7 @@ public class TermProjectFXMLController implements Initializable {
     
     @FXML
     private void handleGraphBtn(ActionEvent event) throws IOException {
+    	physics.pause();
     	try {
 			physics.getTimeOfFlight();
 			TermProject.setRoot("TermProjectFXMLSecondary");
@@ -304,6 +323,7 @@ public class TermProjectFXMLController implements Initializable {
     private void setHorizontalVelocity(ActionEvent event) {
         try {
             physics.setStartHorizontalVelocity(Double.valueOf(HVelocityField.getText()));
+            updateFields();
         } catch (NumberFormatException e) {
             showAlert("Invalid Input", "Please enter a valid number for Horizontal Velocity.");
         }
@@ -313,6 +333,7 @@ public class TermProjectFXMLController implements Initializable {
     private void setVerticalVelocity(ActionEvent event) {
         try {
             physics.setStartVerticalVelocity(Double.valueOf(VVelocityField1.getText()));
+            updateFields();
         } catch (NumberFormatException e) {
             showAlert("Invalid Input", "Please enter a valid number for Vertical Velocity.");
         }
@@ -321,7 +342,13 @@ public class TermProjectFXMLController implements Initializable {
     @FXML
     private void setHeight(ActionEvent event) {
         try {
-            physics.setStartHeight(Double.valueOf(HeightField.getText()));
+            Double valueOf = Double.valueOf(HeightField.getText());
+            if (valueOf >= 0) {
+            	physics.setStartHeight(valueOf);
+            	updateFields();
+            }
+            else
+            	showAlert("Invalid Input", "Please enter a positive number for Height.");
         } catch (NumberFormatException e) {
             showAlert("Invalid Input", "Please enter a valid number for Height.");
         }
@@ -331,6 +358,7 @@ public class TermProjectFXMLController implements Initializable {
     private void setGrav(ActionEvent event) {
         try {
             physics.setGravitationAcceleration(Double.valueOf(GravAccField.getText()));
+            updateFields();
         } catch (NumberFormatException e) {
             showAlert("Invalid Input", "Please enter a valid number for Gravitational Acceleration.");
         }

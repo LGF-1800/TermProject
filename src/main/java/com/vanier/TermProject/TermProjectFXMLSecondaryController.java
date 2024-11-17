@@ -14,6 +14,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Data;
 import javafx.scene.chart.XYChart.Series;
@@ -74,8 +75,8 @@ public class TermProjectFXMLSecondaryController implements Initializable {
 
         Physics instance = Physics.getInstance();
 		double timeOfFlight = instance.getTimeOfFlight();
-
-        for (double time = 0; time <= timeOfFlight; time += 0.1) {
+		double timeStep = timeOfFlight / 20.0;
+        for (double time = 0; time <= timeOfFlight + timeStep/2; time += timeStep) {
         	double verticalVelocity = instance.calculateVerticalVelocity(time);
         	verticalVelocitySeries.getData().add(new Data<String, Number>(String.format("%.2f", time), verticalVelocity));
         	
@@ -93,21 +94,12 @@ public class TermProjectFXMLSecondaryController implements Initializable {
         Graph2.getData().add(horizontalVelocitySeries);
         Graph1.getData().add(verticalDisplacementSeries);
         Graph3.getData().add(horizontalDisplacementSeries);
+        
     }
-
-
-   
-
+    
     @FXML
     private void handGraphBtnSecond(ActionEvent event) throws IOException {
     	TermProject.setRoot("TermProjectFXMLMain");
     }
     
-    private void showAlert(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
-    }
 }
