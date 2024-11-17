@@ -70,6 +70,8 @@ public class Physics {
 		timeline = new Timeline(new KeyFrame(Duration.millis(1), event -> {
 			updatePosition();
 			setElapsedTime(getElapsedTime() + 0.001);
+			if (calculateY(getElapsedTime()) == 0 && getElapsedTime() > 0)
+				timeline.stop();
 		}));
 		timeline.setCycleCount(Timeline.INDEFINITE);
 	}
