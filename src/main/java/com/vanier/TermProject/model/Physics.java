@@ -86,12 +86,12 @@ public class Physics {
 	}
 
 
-	private void updatePosition() {
+	public void updatePosition() {
 		object.setLayoutX(calculateX(getElapsedTime()) + getObjectWidth()/2);
 		object.setLayoutY(calculateY(getElapsedTime()) + getObjectHeight()/2);
 	}
 
-	private double getObjectHeight() {
+	public double getObjectHeight() {
 		// TODO Auto-generated method stub
 	    if (object == null) {
 	        return 0;
@@ -108,7 +108,7 @@ public class Physics {
 	    }
 	}
 
-	private double getObjectWidth() {
+	public double getObjectWidth() {
 	    if (object == null) {
 	        return 0;
 	    }
@@ -124,7 +124,7 @@ public class Physics {
 	    }
 	}
 
-	private double calculateX(double time) {
+	public double calculateX(double time) {
 	    System.out.println("Debugging calculateX:");
 	    System.out.println("startHorizontalVelocity: " + startHorizontalVelocity);
 	    System.out.println("elapsedTime: " + time);
@@ -136,7 +136,7 @@ public class Physics {
 	}
 
 
-	private double calculateY(double time) {
+	public double calculateY(double time) {
 	    System.out.println("Debugging calculateY:");
 	    System.out.println("startHeight: " + startHeight);
 	    System.out.println("startVerticalVelocity: " + startVerticalVelocity);
@@ -220,6 +220,31 @@ public class Physics {
 
 	public double getHorizontalDisplacement() {
 	    return calculateX(getElapsedTime());
+	}
+
+	public double getTimeOfFlight() {
+	    System.out.println("Calculating time of flight...");
+	    if (gravitationAcceleration <= 0) {
+	        throw new IllegalArgumentException("Gravitational acceleration must be positive.");
+	    }
+	    if (startVerticalVelocity == 0 && startHeight == 0) {
+	        System.out.println("No vertical motion. Time of flight is 0.");
+	        return 0;
+	    }
+	    double g = gravitationAcceleration;
+	    double vy = startVerticalVelocity;
+	    double h = startHeight;
+	    double discriminant = Math.pow(vy, 2) + 2 * g * h;
+	    if (discriminant < 0) {
+	        throw new IllegalStateException("Invalid state: Discriminant is negative, cannot compute time of flight.");
+	    }
+	    double time = (vy + Math.sqrt(discriminant)) / g;
+	    System.out.println("Time of flight calculated: " + time + " seconds.");
+	    return time;
+	}
+
+	public double calculateVerticalVelocity(double time) {
+	    return startVerticalVelocity - gravitationAcceleration * time;
 	}
 
 }

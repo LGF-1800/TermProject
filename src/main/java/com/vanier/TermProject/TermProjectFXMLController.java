@@ -241,18 +241,13 @@ public class TermProjectFXMLController implements Initializable {
     }
     
     @FXML
-    private void handleGraphBtn(ActionEvent event) throws Exception {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("TermProjectFXMLSecondary.fxml"));
-            Parent root2 = loader.load();
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            Scene scene2 = new Scene(root2);
-            stage.setScene(scene2);
-            stage.show();
-
-        } catch (IOException e) {
-            System.out.println("Exception caught.");
-        }
+    private void handleGraphBtn(ActionEvent event) throws IOException {
+    	try {
+			physics.getTimeOfFlight();
+			TermProject.setRoot("TermProjectFXMLSecondary");
+		} catch (IllegalArgumentException | IllegalStateException e) {
+			showAlert("Invalid Input", e.getMessage());
+		}
     }
 
     @FXML

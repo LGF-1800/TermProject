@@ -49,7 +49,7 @@
       <Line fx:id="VerticalLineSecond" endX="-33.333251953125" endY="37.50006103515625" layoutX="784.0" layoutY="944.0" startX="-33.33331298828125" startY="142.5" />
       <Line fx:id="CrossLine1" endX="1830.5" endY="0.2298583984375" layoutX="100.0" layoutY="502.0" startX="-100.0" />
       <Line fx:id="CrossLine" endX="-85.0" endY="992.0" layoutX="1051.0" layoutY="-13.0" startX="-84.99993896484375" startY="39.33332824707031" />
-      <LineChart fx:id="Graph" layoutX="-1.0" layoutY="26.0" prefHeight="476.0" prefWidth="965.0" title="Velocity in the Y-Axis as a Function of Time Graph">
+      <LineChart fx:id="Graph" layoutX="-1.0" layoutY="26.0" legendVisible="false" prefHeight="476.0" prefWidth="965.0" title="Velocity in the Y-Axis as a Function of Time Graph">
         <xAxis>
           <CategoryAxis label="Time(s)" side="BOTTOM">
                <tickLabelFont>
@@ -65,7 +65,7 @@
             </NumberAxis>
         </yAxis>
       </LineChart>
-      <LineChart fx:id="Graph1" layoutY="503.0" prefHeight="476.0" prefWidth="965.0" title="Displacement in the Y-Axis as a Function of Time">
+      <LineChart fx:id="Graph1" layoutY="503.0" legendVisible="false" prefHeight="476.0" prefWidth="965.0" title="Displacement in the Y-Axis as a Function of Time">
          <xAxis>
             <CategoryAxis label="Time(s)" side="BOTTOM">
                <tickLabelFont>
@@ -81,7 +81,7 @@
             </NumberAxis>
          </yAxis>
       </LineChart>
-      <LineChart fx:id="Graph2" layoutX="964.0" layoutY="26.0" prefHeight="476.0" prefWidth="965.0" title="Velocity in the X-Axis as a Function of Time Graph">
+      <LineChart fx:id="Graph2" layoutX="964.0" layoutY="26.0" legendVisible="false" prefHeight="476.0" prefWidth="965.0" title="Velocity in the X-Axis as a Function of Time Graph">
          <xAxis>
             <CategoryAxis label="Time(s)" side="BOTTOM">
                <tickLabelFont>
@@ -97,7 +97,7 @@
             </NumberAxis>
          </yAxis>
       </LineChart>
-      <LineChart fx:id="Graph3" layoutX="964.0" layoutY="503.0" prefHeight="476.0" prefWidth="965.0" title="Displacement in the X-Axis as a Function of Time">
+      <LineChart fx:id="Graph3" layoutX="964.0" layoutY="503.0" legendVisible="false" prefHeight="476.0" prefWidth="965.0" title="Displacement in the X-Axis as a Function of Time">
          <xAxis>
             <CategoryAxis label="Time(s)" side="BOTTOM">
                <tickLabelFont>
