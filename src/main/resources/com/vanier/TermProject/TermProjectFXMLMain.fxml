@@ -46,7 +46,7 @@
          </font>
       </Label>
       <Rectangle fx:id="VVeclocityRec1" arcHeight="5.0" arcWidth="5.0" fill="#1c8cec" height="50.0" layoutX="29.0" layoutY="191.0" smooth="false" stroke="#1c8cec" strokeType="INSIDE" width="142.0" />
-      <TextField fx:id="VVelocityField1" layoutX="170.0" layoutY="191.0" prefHeight="50.0" prefWidth="101.0">
+      <TextField fx:id="VVelocityField1" layoutX="170.0" layoutY="191.0" onAction="#setVerticalVelocity" prefHeight="50.0" prefWidth="101.0">
          <font>
             <Font size="15.0" />
          </font>
@@ -57,7 +57,7 @@
          </font>
       </Label>
       <Rectangle fx:id="HVeclocityRec" arcHeight="5.0" arcWidth="5.0" fill="#1c8cec" height="50.0" layoutX="30.0" layoutY="105.0" smooth="false" stroke="#1c8cec" strokeType="INSIDE" width="142.0" />
-      <TextField fx:id="HVelocityField" layoutX="172.0" layoutY="105.0" prefHeight="50.0" prefWidth="101.0">
+      <TextField fx:id="HVelocityField" layoutX="172.0" layoutY="105.0" onAction="#setHorizontalVelocity" prefHeight="50.0" prefWidth="101.0">
          <font>
             <Font size="15.0" />
          </font></TextField>
@@ -67,7 +67,7 @@
          </font>
       </Label>
       <Rectangle fx:id="AngleRec" arcHeight="5.0" arcWidth="5.0" fill="#1c8cec" height="50.0" layoutX="29.0" layoutY="276.0" smooth="false" stroke="#1c8cec" strokeType="INSIDE" width="142.0" />
-      <TextField fx:id="AngleField" layoutX="170.0" layoutY="276.0" prefHeight="50.0" prefWidth="101.0">
+      <TextField fx:id="AngleField" layoutX="170.0" layoutY="276.0" onAction="#setAngle" prefHeight="50.0" prefWidth="101.0">
          <font>
             <Font size="15.0" />
          </font></TextField>
@@ -77,7 +77,7 @@
          </font>
       </Label>
       <Rectangle fx:id="GravAccRec" arcHeight="5.0" arcWidth="5.0" fill="#1c8cec" height="50.0" layoutX="27.0" layoutY="445.0" smooth="false" stroke="#1c8cec" strokeType="INSIDE" width="211.0" />
-      <TextField fx:id="GravAccField" layoutX="236.0" layoutY="445.0" prefHeight="50.0" prefWidth="101.0">
+      <TextField fx:id="GravAccField" layoutX="236.0" layoutY="445.0" onAction="#setGrav" prefHeight="50.0" prefWidth="101.0">
          <font>
             <Font size="15.0" />
          </font></TextField>
@@ -87,7 +87,7 @@
          </font>
       </Label>
       <Rectangle fx:id="HeightRec" arcHeight="5.0" arcWidth="5.0" fill="#1c8cec" height="50.0" layoutX="28.0" layoutY="360.0" smooth="false" stroke="#1c8cec" strokeType="INSIDE" width="142.0" />
-      <TextField fx:id="HeightField" layoutX="169.0" layoutY="360.0" prefHeight="50.0" prefWidth="101.0">
+      <TextField fx:id="HeightField" layoutX="169.0" layoutY="360.0" onAction="#setHeight" prefHeight="50.0" prefWidth="101.0">
          <font>
             <Font size="15.0" />
          </font></TextField>

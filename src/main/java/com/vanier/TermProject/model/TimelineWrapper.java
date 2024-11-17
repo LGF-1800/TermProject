@@ -6,6 +6,7 @@ import javafx.animation.Timeline;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 
+@Deprecated
 public class TimelineWrapper {
 
 	private Circle circle;

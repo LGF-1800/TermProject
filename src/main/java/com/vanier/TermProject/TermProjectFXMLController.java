@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import com.vanier.TermProject.model.Physics;
 import com.vanier.TermProject.model.TimelineWrapper;
 
+import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -14,6 +16,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
@@ -182,21 +185,28 @@ public class TermProjectFXMLController implements Initializable {
 	private double timeOfFlight;
 	private double initialHeight;
 	private Timeline timeline;
+	
+	//stuff i added 2024-11-16
+	private Physics physics;
    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
     	circle = new Circle(50, Color.RED);
 		ScenePane.getChildren().add(circle);
-		circle.setLayoutX(50);
-		circle.setLayoutY(50);
     	//can we flip this so that the origin is on the bottom left???
     	ScenePane.setScaleY(-1);//it works this is so good
     	
-    	scale = 10;
-//    	circle.setTranslateX(100);
+    	physics = Physics.getInstance();
+    	physics.setObject(circle);
+    	physics.elapsedTimeProperty().addListener((observable, oldValue, newValue) -> {
+    		VerticalDisReading.setText(String.format("%.3f", physics.getVerticalDisplacement()));
+    		HorizontalDisReading.setText(String.format("%.3f", physics.getHorizontalDisplacement()));
+    		TimeReading.setText(String.format("%.3f", newValue.doubleValue()));
+    	});
     }    
     
+    @Deprecated //no one should use this. i transported tiba's calculations to the physics class in model
+    //except the horizontal and vertical displacements they kinda dont work
     @FXML
     private void handleCalculation(ActionEvent event) throws NumberFormatException {
         try {
@@ -247,34 +257,96 @@ public class TermProjectFXMLController implements Initializable {
 
     @FXML
     private void handleStartBtn(ActionEvent event) {
-        handleCalculation(event); //lmao
-        timeline = timelineWrapper.buildTimeline();
-        timeline.play();
+    	physics.play();
     }
 
     @FXML
     private void handleStopBtn(ActionEvent event) {
-    	timeline.pause();
+    	physics.pause();
     }
 
     @FXML
     private void handleResetBtn(ActionEvent event) {
-    	timeline.pause();
-    	timeline.jumpTo(Duration.ZERO);
+    	physics.reset();
     }
 
     @FXML
     private void handleRewindBtn(ActionEvent event) {
-    	timeline.pause();
-    	timeline.jumpTo(Duration.seconds(Double.valueOf(RewindToField.getText())));
-    	timeline.play();
+        try {
+            double input = Double.valueOf(RewindToField.getText());
+            if (physics.getElapsedTime() >= input) {
+                physics.jumpTo(input);
+            } else {
+                showAlert("Invalid Input", "Rewind value must be less than or equal to the current elapsed time.");
+            }
+        } catch (NumberFormatException e) {
+            showAlert("Invalid Input", "Please enter a valid number for Rewind.");
+        }
     }
 
     @FXML
     private void handleAdvanceBtn(ActionEvent event) {
-    	timeline.pause();
-    	timeline.jumpTo(Duration.seconds(Double.valueOf(AdvanceToField.getText())));
-    	timeline.play();
+        try {
+            double input = Double.valueOf(AdvanceToField.getText());
+            if (physics.getElapsedTime() <= input) {
+                physics.jumpTo(input);
+            } else {
+                showAlert("Invalid Input", "Advance value must be greater than or equal to the current elapsed time.");
+            }
+        } catch (NumberFormatException e) {
+            showAlert("Invalid Input", "Please enter a valid number for Advance.");
+        }
+    }
+
+    
+    @Deprecated //kinda useless when u already have hvelocity and vvelocity
+    @FXML
+	private void setAngle(ActionEvent event) {
+//    	physics.setStartAngle(Double.valueOf(AngleField.getText()));
+	}
+    
+    @FXML
+    private void setHorizontalVelocity(ActionEvent event) {
+        try {
+            physics.setStartHorizontalVelocity(Double.valueOf(HVelocityField.getText()));
+        } catch (NumberFormatException e) {
+            showAlert("Invalid Input", "Please enter a valid number for Horizontal Velocity.");
+        }
+    }
+
+    @FXML
+    private void setVerticalVelocity(ActionEvent event) {
+        try {
+            physics.setStartVerticalVelocity(Double.valueOf(VVelocityField1.getText()));
+        } catch (NumberFormatException e) {
+            showAlert("Invalid Input", "Please enter a valid number for Vertical Velocity.");
+        }
+    }
+
+    @FXML
+    private void setHeight(ActionEvent event) {
+        try {
+            physics.setStartHeight(Double.valueOf(HeightField.getText()));
+        } catch (NumberFormatException e) {
+            showAlert("Invalid Input", "Please enter a valid number for Height.");
+        }
+    }
+
+    @FXML
+    private void setGrav(ActionEvent event) {
+        try {
+            physics.setGravitationAcceleration(Double.valueOf(GravAccField.getText()));
+        } catch (NumberFormatException e) {
+            showAlert("Invalid Input", "Please enter a valid number for Gravitational Acceleration.");
+        }
+    }
+    
+    private void showAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
     
 }
