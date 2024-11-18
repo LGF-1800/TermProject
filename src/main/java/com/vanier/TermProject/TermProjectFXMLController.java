@@ -22,6 +22,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -178,7 +179,6 @@ public class TermProjectFXMLController implements Initializable {
     //i yanked these guys out since they will be super useful
     @Deprecated
 	private TimelineWrapper timelineWrapper;
-	@Deprecated
 	private Circle circle;
 	@Deprecated
 	private double scale;
@@ -212,6 +212,23 @@ public class TermProjectFXMLController implements Initializable {
     		HorizontalDisReading.setText(String.format("%.3f", physics.getHorizontalDisplacement()));
     		TimeReading.setText(String.format("%.3f", newValue.doubleValue()));
     	});
+    	
+    	Tooltip tooltip = new Tooltip();
+    	circle.setOnMouseEntered(event -> {
+    	    tooltip.setText(String.format("x: %.3f, y: %.3f", physics.calculateX(physics.getElapsedTime()), physics.calculateY(physics.getElapsedTime())));
+    	    tooltip.show(circle, event.getScreenX() + 10, event.getScreenY() + 10);
+    	});
+    	
+    	circle.setOnMouseMoved(event -> {
+    		tooltip.setText(String.format("x: %.3f, y: %.3f", physics.calculateX(physics.getElapsedTime()), physics.calculateY(physics.getElapsedTime())));
+            tooltip.setX(event.getScreenX() + 10);
+            tooltip.setY(event.getScreenY() + 10);
+        });
+
+        circle.setOnMouseExited(event -> {
+            tooltip.hide();
+
+        });
     	
     	updateFields();
     }
