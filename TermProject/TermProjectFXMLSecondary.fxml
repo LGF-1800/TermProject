@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" fx:id="AnchorSecond" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="termproject.TermProjectFXMLSecondaryController">
+   <children>
+      <MenuBar fx:id="MenuBarSecond" layoutY="1.0" prefHeight="25.0" prefWidth="1932.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Close" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Delete" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="User Manual" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <Line fx:id="OrthogonalToLeftLine3" endX="1812.5001220703125" endY="6.103515625E-5" layoutX="118.0" layoutY="981.0" startX="-118.0" startY="6.103515625E-5" />
+      <Button fx:id="GraphBtnSecond" layoutX="862.0" layoutY="994.0" mnemonicParsing="false" onAction="#handGraphBtnSecond" prefHeight="71.0" prefWidth="303.0" text="Projectile Motion Simulation">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Button>
+      <Rectangle fx:id="GraphShapeSecond" arcHeight="5.0" arcWidth="5.0" height="9.0" layoutX="764.0" layoutY="1009.0" rotate="315.0" stroke="BLACK" strokeType="INSIDE" width="50.0" />
+      <Rectangle fx:id="GraphShapeSecond1" arcHeight="5.0" arcWidth="5.0" height="9.0" layoutX="764.0" layoutY="1041.0" rotate="225.0" stroke="BLACK" strokeType="INSIDE" width="50.0" />
+      <Rectangle fx:id="GraphShapeSecond2" arcHeight="5.0" arcWidth="5.0" height="9.0" layoutX="795.0" layoutY="1009.0" rotate="315.0" stroke="BLACK" strokeType="INSIDE" width="50.0" />
+      <Rectangle fx:id="GraphShapeSecond3" arcHeight="5.0" arcWidth="5.0" height="9.0" layoutX="795.0" layoutY="1041.0" rotate="225.0" stroke="BLACK" strokeType="INSIDE" width="50.0" />
+      <Line fx:id="VerticalLineSecond1" endX="-33.333251953125" endY="37.50006103515625" layoutX="1213.0" layoutY="945.0" startX="-33.33331298828125" startY="142.5" />
+      <Rectangle fx:id="BotRightRecSecond" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="106.0" layoutX="1180.0" layoutY="982.0" stroke="#d4d4d4" strokeType="INSIDE" width="751.0" />
+      <Rectangle fx:id="BotLeftRecSecond" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="106.0" layoutY="982.0" stroke="#d4d4d4" strokeType="INSIDE" width="751.0" />
+      <Line fx:id="VerticalLineSecond" endX="-33.333251953125" endY="37.50006103515625" layoutX="784.0" layoutY="944.0" startX="-33.33331298828125" startY="142.5" />
+      <Line fx:id="CrossLine1" endX="1830.5" endY="0.2298583984375" layoutX="100.0" layoutY="502.0" startX="-100.0" />
+      <Line fx:id="CrossLine" endX="-85.0" endY="992.0" layoutX="1051.0" layoutY="-13.0" startX="-84.99993896484375" startY="39.33332824707031" />
+      <LineChart fx:id="Graph" layoutX="-1.0" layoutY="26.0" legendVisible="false" prefHeight="476.0" prefWidth="965.0" title="Velocity in the Y-Axis as a Function of Time Graph">
+        <xAxis>
+          <CategoryAxis label="Time(s)" side="BOTTOM">
+               <tickLabelFont>
+                  <Font size="12.0" />
+               </tickLabelFont>
+            </CategoryAxis>
+        </xAxis>
+        <yAxis>
+          <NumberAxis label="Velocity in the Y-Axis(m/s)" side="LEFT">
+               <tickLabelFont>
+                  <Font name="System Bold" size="12.0" />
+               </tickLabelFont>
+            </NumberAxis>
+        </yAxis>
+      </LineChart>
+      <LineChart fx:id="Graph1" layoutY="503.0" legendVisible="false" prefHeight="476.0" prefWidth="965.0" title="Displacement in the Y-Axis as a Function of Time">
+         <xAxis>
+            <CategoryAxis label="Time(s)" side="BOTTOM">
+               <tickLabelFont>
+                  <Font size="12.0" />
+               </tickLabelFont>
+            </CategoryAxis>
+         </xAxis>
+         <yAxis>
+            <NumberAxis label="Displacement in the Y-Axis(m)" side="LEFT">
+               <tickLabelFont>
+                  <Font size="12.0" />
+               </tickLabelFont>
+            </NumberAxis>
+         </yAxis>
+      </LineChart>
+      <LineChart fx:id="Graph2" layoutX="964.0" layoutY="26.0" legendVisible="false" prefHeight="476.0" prefWidth="965.0" title="Velocity in the X-Axis as a Function of Time Graph">
+         <xAxis>
+            <CategoryAxis label="Time(s)" side="BOTTOM">
+               <tickLabelFont>
+                  <Font name="System Bold" size="12.0" />
+               </tickLabelFont>
+            </CategoryAxis>
+         </xAxis>
+         <yAxis>
+            <NumberAxis label="Velocity in the X-Axis(m/s)" side="LEFT">
+               <tickLabelFont>
+                  <Font size="12.0" />
+               </tickLabelFont>
+            </NumberAxis>
+         </yAxis>
+      </LineChart>
+      <LineChart fx:id="Graph3" layoutX="964.0" layoutY="503.0" legendVisible="false" prefHeight="476.0" prefWidth="965.0" title="Displacement in the X-Axis as a Function of Time">
+         <xAxis>
+            <CategoryAxis label="Time(s)" side="BOTTOM">
+               <tickLabelFont>
+                  <Font name="System Bold" size="12.0" />
+               </tickLabelFont>
+            </CategoryAxis>
+         </xAxis>
+         <yAxis>
+            <NumberAxis label="Displacement in the X-Axis (m)" side="LEFT">
+               <tickLabelFont>
+                  <Font name="System Bold" size="12.0" />
+               </tickLabelFont>
+            </NumberAxis>
+         </yAxis>
+      </LineChart>
+   </children>
+</AnchorPane>
