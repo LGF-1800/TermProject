@@ -70,10 +70,14 @@ public class Physics {
 		timeline = new Timeline(new KeyFrame(Duration.millis(1), event -> {
 			updatePosition();
 			setElapsedTime(getElapsedTime() + 0.001);
-			if (calculateY(getElapsedTime()) == 0 && getElapsedTime() > 0)
+			if (hasTheObjectLanded())
 				timeline.stop();
 		}));
 		timeline.setCycleCount(Timeline.INDEFINITE);
+	}
+
+	private boolean hasTheObjectLanded() {
+		return calculateY(getElapsedTime()) == 0 && getElapsedTime() > 0;
 	}
 
 	public static Physics getInstance() {
@@ -89,8 +93,16 @@ public class Physics {
 
 
 	public void updatePosition() {
-		object.setLayoutX(calculateX(getElapsedTime()) + getObjectWidth()/2);
-		object.setLayoutY(calculateY(getElapsedTime()) + getObjectHeight()/2);
+		object.setLayoutX(getCurrentCenterOfObjectX());
+		object.setLayoutY(getCurrentCenterOfObjectY());
+	}
+
+	public double getCurrentCenterOfObjectX() {
+		return calculateX(getElapsedTime()) + getObjectWidth()/2;
+	}
+
+	public double getCurrentCenterOfObjectY() {
+		return calculateY(getElapsedTime()) + getObjectHeight()/2;
 	}
 
 	public double getObjectHeight() {
@@ -195,8 +207,10 @@ public class Physics {
 	}
 
 	public void play() {
-		// TODO Auto-generated method stub
-		timeline.play();
+		if (!hasTheObjectLanded()) {
+			// TODO Auto-generated method stub
+			timeline.play();
+		}
 	}
 
 	public void pause() {

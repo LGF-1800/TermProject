@@ -16,6 +16,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -23,6 +24,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.PixelWriter;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -169,6 +171,8 @@ public class TermProjectFXMLController implements Initializable {
     private Button RewindBtn;
     @FXML
     private Button AdvanceBtn;
+    @FXML
+    private Canvas canvas;
     
     //i added this pane because it's gonna be so annoying trying to make it so that
     //the circle stays away from the controls if the circle's parent is the anchorpane itself
@@ -208,9 +212,9 @@ public class TermProjectFXMLController implements Initializable {
     	physics = Physics.getInstance();
     	physics.setObject(circle);
     	physics.elapsedTimeProperty().addListener((observable, oldValue, newValue) -> {
-    		VerticalDisReading.setText(String.format("%.3f", physics.getVerticalDisplacement()));
-    		HorizontalDisReading.setText(String.format("%.3f", physics.getHorizontalDisplacement()));
-    		TimeReading.setText(String.format("%.3f", newValue.doubleValue()));
+    		double doubleValue = newValue.doubleValue();
+    		drawBrush(canvas, (int)physics.getCurrentCenterOfObjectX(), (int)physics.getCurrentCenterOfObjectY(), 3, (Color)circle.getFill());
+    		updateReadings(doubleValue);
     	});
     	
     	Tooltip tooltip = new Tooltip();
@@ -227,11 +231,36 @@ public class TermProjectFXMLController implements Initializable {
 
         circle.setOnMouseExited(event -> {
             tooltip.hide();
-
         });
     	
     	updateFields();
+    	updateReadings(physics.getElapsedTime());
     }
+    
+    private void drawBrush(Canvas canvas, int centerX, int centerY, int brushSize, Color color) {
+    	//in english, it colors the pixels that are inside the circle with the radius of brushSize
+        PixelWriter pixelWriter = canvas.getGraphicsContext2D().getPixelWriter();
+        int canvasWidth = (int) canvas.getWidth();
+        int canvasHeight = (int) canvas.getHeight();
+        for (int x = -brushSize; x <= brushSize; x++) {
+            for (int y = -brushSize; y <= brushSize; y++) {
+                if (x * x + y * y <= brushSize * brushSize) {
+                    int pixelX = centerX + x;
+                    int pixelY = centerY + y;
+                    if (pixelX >= 0 && pixelX < canvasWidth && pixelY >= 0 && pixelY < canvasHeight) {
+                        pixelWriter.setColor(pixelX, pixelY, color);
+                    }
+                }
+            }
+        }
+    }
+
+
+	private void updateReadings(double doubleValue) {
+		VerticalDisReading.setText(String.format("%.3f", physics.getVerticalDisplacement()));
+		HorizontalDisReading.setText(String.format("%.3f", physics.getHorizontalDisplacement()));
+		TimeReading.setText(String.format("%.3f", doubleValue));
+	}
 
 	private void updateFields() {
 		VVelocityField1.setText(Double.toString(physics.getStartVerticalVelocity()));
