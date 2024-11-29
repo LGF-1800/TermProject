@@ -2,6 +2,9 @@ package termproject;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import termproject.Physics;
@@ -9,6 +12,7 @@ import termproject.TimelineWrapper;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -18,10 +22,13 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
@@ -32,6 +39,8 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polyline;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -50,13 +59,9 @@ public class TermProjectFXMLController implements Initializable {
     @FXML
     private Label ParamLabel;
     @FXML
-    private Rectangle VVeclocityRec1;
-    @FXML
     private TextField VVelocityField1;
     @FXML
     private Label VVelocityLabel1;
-    @FXML
-    private Rectangle HVeclocityRec;
     @FXML
     private TextField HVelocityField;
     @FXML
@@ -137,10 +142,8 @@ public class TermProjectFXMLController implements Initializable {
     private Rectangle BotRightRec;
     @FXML
     private Line VerticalLine3;
-
     @FXML
     private Pane ScenePane;
-
     @Deprecated
     private TimelineWrapper timelineWrapper;
     @Deprecated
@@ -159,7 +162,6 @@ public class TermProjectFXMLController implements Initializable {
     private double initialHeight;
     @Deprecated
     private Timeline timeline;
-
     private Physics physics;
     @FXML
     private Rectangle EnterTimeRec;
@@ -175,6 +177,16 @@ public class TermProjectFXMLController implements Initializable {
     private ComboBox<String> SimTimeComboBox;
     @FXML
     private ComboBox<String> HorizontalDisComboBox;
+    @FXML
+    private MenuItem MenuFileClose;
+    @FXML
+    private MenuItem MenuHelpManual;
+    @FXML
+    private MenuItem MenuEditTheme;
+    @FXML
+    private Rectangle VVelocityRec;
+    @FXML
+    private Rectangle HVelocityRec;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -227,8 +239,12 @@ public class TermProjectFXMLController implements Initializable {
     private void handleGraphBtn(ActionEvent event) throws IOException {
         physics.pause();
         try {
-            physics.getTimeOfFlight();
-            TermProject.setRoot("TermProjectFXMLSecondary");
+            if ((physics.getGravitationAcceleration() <= 0) || ((physics.getStartHeight() <= 0) && (physics.getStartVerticalVelocity() <= 0))) {
+                showAlert("Invalid Input", "Gravitational Acceleration and either the Vertical Velocity or Height fields must be greater than zero.");
+            } else {
+                physics.getTimeOfFlight();
+                TermProject.setRoot("TermProjectFXMLSecondary");
+            }
         } catch (IllegalArgumentException | IllegalStateException e) {
             showAlert("Invalid Input", e.getMessage());
         }
@@ -253,9 +269,17 @@ public class TermProjectFXMLController implements Initializable {
     private void handleEnterTimeBtn(ActionEvent event) {
         try {
             double input = Double.valueOf(EnterTimeField.getText());
-            physics.jumpTo(input);
+            if (physics.getElapsedTime() == 0){
+                 showAlert("Invalid Input", "Please start the simulation before using Enter Time.");
+            }
+            else if(input > physics.getTimeOfFlight()){
+                 showAlert("Invalid Input", "The simulation will have have already completed at this time.\nPlease enter a valid number for Enter Time.");
+            }
+            else{
+            physics.jumpTo(input);    
+            }
         } catch (NumberFormatException e) {
-            showAlert("Invalid Input", "Please enter a valid number for Rewind.");
+            showAlert("Invalid Input", "Please enter a valid number for Enter Time.");
         }
     }
 
@@ -390,4 +414,180 @@ public class TermProjectFXMLController implements Initializable {
         TimeReading.setText(String.format("%.3f %s", simulationTime, selectedUnit));
     }
 
+    @FXML
+    private void handleMenuFileClose(ActionEvent event) {
+        Platform.exit();
+    }
+    
+    Alert alert = new Alert(AlertType.INFORMATION);
+  
+    @FXML
+    private void handleMenuHelpManual(ActionEvent event) { 
+        Alert manual = getAlert();
+    }
+    
+    public Alert getAlert(){
+        alert.setTitle("User Manual");
+        alert.setHeaderText("2-D Projectile Simulator");
+        alert.setHeight(900);
+        alert.setWidth(1050);
+         String contentText = """
+            This Java program is a simulator designed to replicate 2-D projectile motion, allowing you to visualize and analyze the behavior of an object influenced by gravity and initial velocity.
+            It serves as an interactive tool for exploring key physics concepts, offering both educational value and hands-on experimentation.
+            -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+            Parameter Adjustments
+
+            The simulation begins by defining key parameters under the "Parameter Adjustments" section. You can input the following variables in the designated text fields:
+
+            Initial Velocity (Vertical and Horizontal): Define the starting speed in both axes.
+            Initial Height: Specify the object's launch height.
+            Gravitational Acceleration: Set the acceleration due to gravity affecting the object's motion.
+
+            Ensure all fields are completed accurately before proceeding to the controls.
+            -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+            Simulation Controls
+
+            Under the "Controls" section, you can interact with the simulation using the following options:
+
+            Start/Stop: Begin or pause the simulation.
+            Reset: Restart the simulation to its initial state.
+            Advance/Rewind: Move forward or backward to a specific point in the trajectory (if applicable).
+            -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+            Dynamic Readings
+
+            As the simulation progresses, three real-time readings are displayed at the bottom of the screen:
+
+            Horizontal Displacement: The distance traveled along the x-axis.
+            Vertical Displacement: The height relative to the initial position.
+            Elapsed Time: The total time since the simulation began.
+
+            Below these readings, you can change the units for displaying these values to suit your preferences.
+            -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+            Graphical Analysis
+
+            To the right of the readings, the "Graphical Analysis" button allows you to switch to a new scene featuring four line graphs. 
+            These graphs plot the following functions over time, based on the most recent input:
+
+            Velocity (Y-axis)
+            Velocity (X-axis)
+            Displacement (Y-axis)
+            Displacement (X-axis)
+                              
+            You can return to the simulation by pressing the "Projectile Motion Simulation" button at the bottom of the scene.
+        """;
+
+        String[] keywords = { "Parameter Adjustments", "Simulation Controls", "Dynamic Readings", "Graphical Analysis", "Projectile Motion Simulation" };
+
+        TextFlow textFlow = new TextFlow();
+        for (String paragraph : contentText.split("\n\n")) {
+            for (String keyword : keywords) {
+                if (paragraph.contains(keyword)) {
+                    paragraph = paragraph.replace(keyword, "\0" + keyword + "\0");
+                }
+            }
+            for (String part : paragraph.split("\0")) {
+                Text text = new Text(part);
+                if (arrayContains(keywords, part)) {
+                    text.setStyle("-fx-font-weight: bold;");
+                }
+                textFlow.getChildren().add(text);
+            }
+            textFlow.getChildren().add(new Text("\n\n")); 
+        }
+
+        alert.getDialogPane().setContent(textFlow);
+
+        alert.showAndWait();
+        return alert;
+    }
+
+    private boolean arrayContains(String[] array, String value) {
+        for (String item : array) {
+            if (item.equals(value)) {
+                return true;
+            }
+        }
+        return false;
+    }
+   
+    @FXML
+    private void handleMenuEditTheme(ActionEvent event) {
+        List<String> themes = new ArrayList<>();
+        themes.add("Default");
+        themes.add("Gray");
+        themes.add("Blue");
+
+        ChoiceDialog<String> dialog = new ChoiceDialog<>("Default", themes);
+        dialog.setTitle("Theme Editor");
+        dialog.setHeaderText("Theme Selction");
+        dialog.setContentText("Choose your preferred theme:");
+        Optional<String> result = dialog.showAndWait();
+        result.ifPresent(selection -> {
+            switch (selection) {
+                case "Default" -> {
+                    Color D = Color.web("d4d4d4");
+                    Color B = Color.web("1c8cec");
+                    ParamRec.setFill(D);
+                    ControlsRec.setFill(D);
+                    BotLeftRec.setFill(D);
+                    VerticalDisRec.setFill(D);
+                    HorizontalDisRec.setFill(D);
+                    TimeRec.setFill(D);
+                    BotRightRec.setFill(D);
+                    VVelocityRec.setFill(B);
+                    HVelocityRec.setFill(B);
+                    GravAccRec.setFill(B);
+                    HeightRec.setFill(B);
+                    EnterTimeRec.setFill(B);
+                }
+                case "Gray" -> {
+                    Color D = Color.web("d4d4d4");
+                    ParamRec.setFill(D);
+                    ControlsRec.setFill(D);
+                    BotLeftRec.setFill(D);
+                    VerticalDisRec.setFill(D);
+                    HorizontalDisRec.setFill(D);
+                    TimeRec.setFill(D);
+                    BotRightRec.setFill(D);
+                    VVelocityRec.setFill(Color.GRAY);
+                    HVelocityRec.setFill(Color.GRAY);
+                    GravAccRec.setFill(Color.GRAY);
+                    HeightRec.setFill(Color.GRAY);
+                    EnterTimeRec.setFill(Color.GRAY);
+
+                }
+                case "Blue" -> {
+                    Color B = Color.web("1c8cec");
+                    ParamRec.setFill(Color.SKYBLUE);
+                    ControlsRec.setFill(Color.SKYBLUE);
+                    BotLeftRec.setFill(Color.SKYBLUE);
+                    VerticalDisRec.setFill(Color.SKYBLUE);
+                    HorizontalDisRec.setFill(Color.SKYBLUE);
+                    TimeRec.setFill(Color.SKYBLUE);
+                    BotRightRec.setFill(Color.SKYBLUE);
+                    VVelocityRec.setFill(B);
+                    HVelocityRec.setFill(B);
+                    GravAccRec.setFill(B);
+                    HeightRec.setFill(B);
+                    EnterTimeRec.setFill(B);
+                }
+                default -> {
+                    Color D = Color.web("d4d4d4");
+                    Color B = Color.web("1c8cec");
+                    ParamRec.setFill(D);
+                    ControlsRec.setFill(D);
+                    BotLeftRec.setFill(D);
+                    VerticalDisRec.setFill(D);
+                    HorizontalDisRec.setFill(D);
+                    TimeRec.setFill(D);
+                    BotRightRec.setFill(D);
+                    VVelocityRec.setFill(B);
+                    HVelocityRec.setFill(B);
+                    GravAccRec.setFill(B);
+                    HeightRec.setFill(B);
+                    EnterTimeRec.setFill(B);
+                }
+            }
+        });
+    }
 }

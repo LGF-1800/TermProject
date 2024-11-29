@@ -12,23 +12,23 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="AnchorSecond" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="termproject.TermProjectFXMLSecondaryController">
+<AnchorPane id="AnchorPane" fx:id="AnchorSecond" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="termproject.TermProjectFXMLSecondaryController">
    <children>
       <MenuBar fx:id="MenuBarSecond" layoutY="1.0" prefHeight="25.0" prefWidth="1932.0">
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-              <MenuItem mnemonicParsing="false" text="Close" />
+              <MenuItem fx:id="MenuFileClose2" mnemonicParsing="false" onAction="#handleMenuFileClose2" text="Close" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Edit">
             <items>
-              <MenuItem mnemonicParsing="false" text="Delete" />
+              <MenuItem fx:id="MenuEditTheme2" mnemonicParsing="false" onAction="#handleMenuEditTheme2" text="Theme" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Help">
             <items>
-              <MenuItem mnemonicParsing="false" text="User Manual" />
+              <MenuItem fx:id="MenuHelpManual2" mnemonicParsing="false" onAction="#handleMenuHelpManual2" text="User Manual" />
             </items>
           </Menu>
         </menus>
