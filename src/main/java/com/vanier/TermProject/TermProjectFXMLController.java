@@ -2,29 +2,30 @@ package com.vanier.TermProject;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import com.vanier.TermProject.model.Physics;
 import com.vanier.TermProject.model.TimelineWrapper;
 
-import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceDialog;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
-import javafx.scene.control.Slider;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
-import javafx.scene.image.PixelWriter;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -32,15 +33,11 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polyline;
 import javafx.scene.shape.Rectangle;
-import javafx.stage.Stage;
-import javafx.util.Duration;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 
 public class TermProjectFXMLController implements Initializable {
 
-    @FXML
-    private Rectangle AdvanceToRec;
-    @FXML
-    private Rectangle RewindRec;
     @FXML
     private Rectangle ControlsRec;
     @FXML
@@ -54,23 +51,13 @@ public class TermProjectFXMLController implements Initializable {
     @FXML
     private Label ParamLabel;
     @FXML
-    private Rectangle VVeclocityRec1;
-    @FXML
     private TextField VVelocityField1;
     @FXML
     private Label VVelocityLabel1;
     @FXML
-    private Rectangle HVeclocityRec;
-    @FXML
     private TextField HVelocityField;
     @FXML
     private Label HVelocityLabel;
-    @FXML
-    private Rectangle AngleRec;
-    @FXML
-    private TextField AngleField;
-    @FXML
-    private Label AngleLabel;
     @FXML
     private Rectangle GravAccRec;
     @FXML
@@ -98,14 +85,6 @@ public class TermProjectFXMLController implements Initializable {
     @FXML
     private Button StopBtn;
     @FXML
-    private Label RewindLabel;
-    @FXML
-    private TextField RewindToField;
-    @FXML
-    private Label AdvanceToLabel;
-    @FXML
-    private TextField AdvanceToField;
-    @FXML
     private Button ResetBtn;
     @FXML
     private Polyline ResetShape1;
@@ -116,25 +95,17 @@ public class TermProjectFXMLController implements Initializable {
     @FXML
     private Rectangle BotLeftRec;
     @FXML
-    private Slider VerticalDisSlider;
-    @FXML
     private Rectangle VerticalDisRec;
     @FXML
     private Label VerticalDisLabel;
     @FXML
     private Label VerticalDisReading;
     @FXML
-    private Label VerticalDisUnit;
-    @FXML
     private Rectangle HorizontalDisRec;
     @FXML
     private Label HorizontalDisLabel;
     @FXML
     private Label HorizontalDisReading;
-    @FXML
-    private Label HorizontalDisUnit;
-    @FXML
-    private Slider HorizontalDisSlider;
     @FXML
     private Line VerticalLine;
     @FXML
@@ -145,10 +116,6 @@ public class TermProjectFXMLController implements Initializable {
     private Label TimeLabel;
     @FXML
     private Label TimeReading;
-    @FXML
-    private Label TimeUnit;
-    @FXML
-    private Slider TimeSlider;
     @FXML
     private Line VerticalLine2;
     @FXML
@@ -168,203 +135,146 @@ public class TermProjectFXMLController implements Initializable {
     @FXML
     private Line VerticalLine3;
     @FXML
-    private Button RewindBtn;
-    @FXML
-    private Button AdvanceBtn;
-    @FXML
-    private Canvas canvas;
-    
-    //i added this pane because it's gonna be so annoying trying to make it so that
-    //the circle stays away from the controls if the circle's parent is the anchorpane itself
-    //so i made a separate pane for that and the circle is going to have that as its parent
-    @FXML
     private Pane ScenePane;
-    
-    //i yanked these guys out since they will be super useful
     @Deprecated
-	private TimelineWrapper timelineWrapper;
-	private Circle circle;
-	@Deprecated
-	private double scale;
-	@Deprecated
-	private double vVelocity;
-	@Deprecated
-	private double hVelocity;
-	@Deprecated
-	private double gravity;
-	@Deprecated
-	private double timeOfFlight;
-	@Deprecated
-	private double initialHeight;
-	@Deprecated
-	private Timeline timeline;
-	
-	//stuff i added 2024-11-16
-	private Physics physics;
-   
+    private TimelineWrapper timelineWrapper;
+    @Deprecated
+    private Circle circle;
+    @Deprecated
+    private double scale;
+    @Deprecated
+    private double vVelocity;
+    @Deprecated
+    private double hVelocity;
+    @Deprecated
+    private double gravity;
+    @Deprecated
+    private double timeOfFlight;
+    @Deprecated
+    private double initialHeight;
+    @Deprecated
+    private Timeline timeline;
+    private Physics physics;
+    @FXML
+    private Rectangle EnterTimeRec;
+    @FXML
+    private Label EnterTimeLabel;
+    @FXML
+    private TextField EnterTimeField;
+    @FXML
+    private Button EnterTimeBtn;
+    @FXML
+    private ComboBox<String> VerticalDisComboBox;
+    @FXML
+    private ComboBox<String> SimTimeComboBox;
+    @FXML
+    private ComboBox<String> HorizontalDisComboBox;
+    @FXML
+    private MenuItem MenuFileClose;
+    @FXML
+    private MenuItem MenuHelpManual;
+    @FXML
+    private MenuItem MenuEditTheme;
+    @FXML
+    private Rectangle VVelocityRec;
+    @FXML
+    private Rectangle HVelocityRec;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-    	circle = new Circle(50, Color.RED);
-		ScenePane.getChildren().add(circle);
-    	//can we flip this so that the origin is on the bottom left???
-    	ScenePane.setScaleY(-1);//it works this is so good
-    	
-    	physics = Physics.getInstance();
-    	physics.setObject(circle);
-    	physics.elapsedTimeProperty().addListener((observable, oldValue, newValue) -> {
-    		double doubleValue = newValue.doubleValue();
-    		drawBrush(canvas, (int)physics.getCurrentCenterOfObjectX(), (int)physics.getCurrentCenterOfObjectY(), 3, (Color)circle.getFill());
-    		updateReadings(doubleValue);
-    	});
-    	
-    	Tooltip tooltip = new Tooltip();
-    	circle.setOnMouseEntered(event -> {
-    	    tooltip.setText(String.format("x: %.3f, y: %.3f", physics.calculateX(physics.getElapsedTime()), physics.calculateY(physics.getElapsedTime())));
-    	    tooltip.show(circle, event.getScreenX() + 10, event.getScreenY() + 10);
-    	});
-    	
-    	circle.setOnMouseMoved(event -> {
-    		tooltip.setText(String.format("x: %.3f, y: %.3f", physics.calculateX(physics.getElapsedTime()), physics.calculateY(physics.getElapsedTime())));
+
+        VerticalDisComboBox.setItems(FXCollections.observableArrayList("Kilometer(km)", "Meter(m)", "Centimeter(cm)", "Millimeter(mm)"));
+        HorizontalDisComboBox.setItems(FXCollections.observableArrayList("Kilometer(km)", "Meter(m)", "Centimeter(cm)", "Millimeter(mm)"));
+        SimTimeComboBox.setItems(FXCollections.observableArrayList("Hour(h)", "Minute(min)", "Second(s)", "Millisecond(ms)"));
+
+        circle = new Circle(50, Color.RED);
+        ScenePane.getChildren().add(circle);
+
+        ScenePane.setScaleY(-1);
+
+        physics = Physics.getInstance();
+        physics.setObject(circle);
+        physics.elapsedTimeProperty().addListener((observable, oldValue, newValue) -> {
+            VerticalDisReading.setText(String.format("%.3f", physics.getVerticalDisplacement()));
+            HorizontalDisReading.setText(String.format("%.3f", physics.getHorizontalDisplacement()));
+            TimeReading.setText(String.format("%.3f", newValue.doubleValue()));
+        });
+
+        Tooltip tooltip = new Tooltip();
+        circle.setOnMouseEntered(event -> {
+            tooltip.setText(String.format("x: %.3f, y: %.3f", physics.calculateX(physics.getElapsedTime()), physics.calculateY(physics.getElapsedTime())));
+            tooltip.show(circle, event.getScreenX() + 10, event.getScreenY() + 10);
+        });
+
+        circle.setOnMouseMoved(event -> {
+            tooltip.setText(String.format("x: %.3f, y: %.3f", physics.calculateX(physics.getElapsedTime()), physics.calculateY(physics.getElapsedTime())));
             tooltip.setX(event.getScreenX() + 10);
             tooltip.setY(event.getScreenY() + 10);
         });
 
         circle.setOnMouseExited(event -> {
             tooltip.hide();
+
         });
-    	
-    	updateFields();
-    	updateReadings(physics.getElapsedTime());
-    }
-    
-    private void drawBrush(Canvas canvas, int centerX, int centerY, int brushSize, Color color) {
-    	//in english, it colors the pixels that are inside the circle with the radius of brushSize
-        PixelWriter pixelWriter = canvas.getGraphicsContext2D().getPixelWriter();
-        int canvasWidth = (int) canvas.getWidth();
-        int canvasHeight = (int) canvas.getHeight();
-        for (int x = -brushSize; x <= brushSize; x++) {
-            for (int y = -brushSize; y <= brushSize; y++) {
-                if (x * x + y * y <= brushSize * brushSize) {
-                    int pixelX = centerX + x;
-                    int pixelY = centerY + y;
-                    if (pixelX >= 0 && pixelX < canvasWidth && pixelY >= 0 && pixelY < canvasHeight) {
-                        pixelWriter.setColor(pixelX, pixelY, color);
-                    }
-                }
-            }
-        }
+
+        updateFields();
     }
 
-
-	private void updateReadings(double doubleValue) {
-		VerticalDisReading.setText(String.format("%.3f", physics.getVerticalDisplacement()));
-		HorizontalDisReading.setText(String.format("%.3f", physics.getHorizontalDisplacement()));
-		TimeReading.setText(String.format("%.3f", doubleValue));
-	}
-
-	private void updateFields() {
-		VVelocityField1.setText(Double.toString(physics.getStartVerticalVelocity()));
-    	HVelocityField.setText(Double.toString(physics.getStartHorizontalVelocity()));
-    	HeightField.setText(Double.toString(physics.getStartHeight()));
-    	GravAccField.setText(Double.toString(physics.getGravitationAcceleration()));
-	}    
-    
-    @Deprecated //no one should use this. i transported tiba's calculations to the physics class in model
-    //except the horizontal and vertical displacements they kinda dont work
-    @FXML
-    private void handleCalculation(ActionEvent event) throws NumberFormatException {
-        try {
-            // Get input values from text fields
-            vVelocity = Double.parseDouble(VVelocityField1.getText()); // Vy
-            hVelocity = Double.parseDouble(HVelocityField.getText()); // Vx
-            gravity = Double.parseDouble(GravAccField.getText()); // g
-            initialHeight = Double.parseDouble(HeightField.getText()); // h
-            circle.setLayoutY(initialHeight  * scale + 50);
-
-            gravity = Math.abs(gravity); // Ensure gravity is positive
-
-            // time of flight = [vy + sqrt(vy^2 + 2*g*h)] / 2 
-            double timeOfFlight = (vVelocity + Math.sqrt(Math.pow(vVelocity, 2) + 2 * gravity * initialHeight)) / gravity;
-            // Calculate horizontal displacement
-            double horizontalDisplacement = hVelocity * timeOfFlight;
-            // Calculate vertical displacement
-            double verticalDisplacement = initialHeight + vVelocity * timeOfFlight - (0.5 * gravity * Math.pow(timeOfFlight, 2));
-            
-            // Display results
-            HorizontalDisReading.setText(String.format("%.2f", horizontalDisplacement));
-            VerticalDisReading.setText(String.format("%.2f", verticalDisplacement));
-            TimeReading.setText(String.format("%.2f", timeOfFlight));
-            
-        	timelineWrapper = new TimelineWrapper(circle, vVelocity, hVelocity, gravity, timeOfFlight, scale);
-            
-        } catch (NumberFormatException e) {
-            System.out.println("Please enter valid numerical values.");
-        } catch (ArithmeticException e) {
-            System.out.println(e.getMessage());
-        }
+    private void updateFields() {
+        VVelocityField1.setText(Double.toString(physics.getStartVerticalVelocity()));
+        HVelocityField.setText(Double.toString(physics.getStartHorizontalVelocity()));
+        HeightField.setText(Double.toString(physics.getStartHeight()));
+        GravAccField.setText(Double.toString(physics.getGravitationAcceleration()));
     }
-    
+
     @FXML
     private void handleGraphBtn(ActionEvent event) throws IOException {
-    	physics.pause();
-    	try {
-			physics.getTimeOfFlight();
-			TermProject.setRoot("TermProjectFXMLSecondary");
-		} catch (IllegalArgumentException | IllegalStateException e) {
-			showAlert("Invalid Input", e.getMessage());
-		}
+        physics.pause();
+        try {
+            if ((physics.getGravitationAcceleration() <= 0) || ((physics.getStartHeight() <= 0) && (physics.getStartVerticalVelocity() <= 0))) {
+                showAlert("Invalid Input", "Gravitational Acceleration and either the Vertical Velocity or Height fields must be greater than zero.");
+            } else {
+                physics.getTimeOfFlight();
+                TermProject.setRoot("TermProjectFXMLSecondary");
+            }
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            showAlert("Invalid Input", e.getMessage());
+        }
     }
 
     @FXML
     private void handleStartBtn(ActionEvent event) {
-    	physics.play();
+        physics.play();
     }
 
     @FXML
     private void handleStopBtn(ActionEvent event) {
-    	physics.pause();
+        physics.pause();
     }
 
     @FXML
     private void handleResetBtn(ActionEvent event) {
-    	physics.reset();
+        physics.reset();
     }
 
     @FXML
-    private void handleRewindBtn(ActionEvent event) {
+    private void handleEnterTimeBtn(ActionEvent event) {
         try {
-            double input = Double.valueOf(RewindToField.getText());
-            if (physics.getElapsedTime() >= input) {
-                physics.jumpTo(input);
-            } else {
-                showAlert("Invalid Input", "Rewind value must be less than or equal to the current elapsed time.");
+            double input = Double.valueOf(EnterTimeField.getText());
+            if (physics.getElapsedTime() == 0){
+                 showAlert("Invalid Input", "Please start the simulation before using Enter Time.");
+            }
+            else if(input > physics.getTimeOfFlight()){
+                 showAlert("Invalid Input", "The simulation will have have already completed at this time.\nPlease enter a valid number for Enter Time.");
+            }
+            else{
+            physics.jumpTo(input);    
             }
         } catch (NumberFormatException e) {
-            showAlert("Invalid Input", "Please enter a valid number for Rewind.");
+            showAlert("Invalid Input", "Please enter a valid number for Enter Time.");
         }
     }
 
-    @FXML
-    private void handleAdvanceBtn(ActionEvent event) {
-        try {
-            double input = Double.valueOf(AdvanceToField.getText());
-            if (physics.getElapsedTime() <= input) {
-                physics.jumpTo(input);
-            } else {
-                showAlert("Invalid Input", "Advance value must be greater than or equal to the current elapsed time.");
-            }
-        } catch (NumberFormatException e) {
-            showAlert("Invalid Input", "Please enter a valid number for Advance.");
-        }
-    }
-
-    
-    @Deprecated //kinda useless when u already have hvelocity and vvelocity
-    @FXML
-	private void setAngle(ActionEvent event) {
-//    	physics.setStartAngle(Double.valueOf(AngleField.getText()));
-	}
-    
     @FXML
     private void setHorizontalVelocity(ActionEvent event) {
         try {
@@ -390,11 +300,11 @@ public class TermProjectFXMLController implements Initializable {
         try {
             Double valueOf = Double.valueOf(HeightField.getText());
             if (valueOf >= 0) {
-            	physics.setStartHeight(valueOf);
-            	updateFields();
+                physics.setStartHeight(valueOf);
+                updateFields();
+            } else {
+                showAlert("Invalid Input", "Please enter a positive number for Height.");
             }
-            else
-            	showAlert("Invalid Input", "Please enter a positive number for Height.");
         } catch (NumberFormatException e) {
             showAlert("Invalid Input", "Please enter a valid number for Height.");
         }
@@ -409,7 +319,7 @@ public class TermProjectFXMLController implements Initializable {
             showAlert("Invalid Input", "Please enter a valid number for Gravitational Acceleration.");
         }
     }
-    
+
     private void showAlert(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
@@ -417,5 +327,259 @@ public class TermProjectFXMLController implements Initializable {
         alert.setContentText(content);
         alert.showAndWait();
     }
+
+    @FXML
+    private void handleVerticalDisComboBox(ActionEvent event) {
+        String selectedUnit = VerticalDisComboBox.getValue();
+        double verticalDisplacement = physics.getVerticalDisplacement();
+
+        switch (selectedUnit) {
+            case "Kilometer(km)":
+                verticalDisplacement /= 1000;
+                break;
+            case "Meter(m)":
+                // No conversion needed; it's the base unit.
+                break;
+            case "Centimeter(cm)":
+                verticalDisplacement *= 100;
+                break;
+            case "Millimeter(mm)":
+                verticalDisplacement *= 1000;
+                break;
+            default:
+                showAlert("Invalid Unit", "Please select a valid unit for Vertical Distance.");
+                return;
+        }
+
+        VerticalDisReading.setText(String.format("%.3f %s", verticalDisplacement, selectedUnit));
+    }
+
+    @FXML
+    private void handleHorizontalDisComboBox(ActionEvent event) {
+        String selectedUnit = HorizontalDisComboBox.getValue();
+        double horizontalDisplacement = physics.getHorizontalDisplacement();
+
+        switch (selectedUnit) {
+            case "Kilometer(km)":
+                horizontalDisplacement /= 1000;
+                break;
+            case "Meter(m)":
+                // No conversion needed; it's the base unit.
+                break;
+            case "Centimeter(cm)":
+                horizontalDisplacement *= 100;
+                break;
+            case "Millimeter(mm)":
+                horizontalDisplacement *= 1000;
+                break;
+            default:
+                showAlert("Invalid Unit", "Please select a valid unit for Horizontal Distance.");
+                return;
+        }
+
+        HorizontalDisReading.setText(String.format("%.3f %s", horizontalDisplacement, selectedUnit));
+    }
+
+    @FXML
+    private void handleSimTimeComboBox(ActionEvent event) {
+        String selectedUnit = SimTimeComboBox.getValue();
+        double simulationTime = physics.getElapsedTime();
+
+        switch (selectedUnit) {
+            case "Hour(h)":
+                simulationTime /= 3600;
+                break;
+            case "Minute(min)":
+                simulationTime /= 60;
+                break;
+            case "Second(s)":
+                // No conversion needed; it's the base unit.
+                break;
+            case "Millisecond(ms)":
+                simulationTime *= 1000;
+                break;
+            default:
+                showAlert("Invalid Unit", "Please select a valid unit for Simulation Time.");
+                return;
+        }
+
+        TimeReading.setText(String.format("%.3f %s", simulationTime, selectedUnit));
+    }
+
+    @FXML
+    private void handleMenuFileClose(ActionEvent event) {
+        Platform.exit();
+    }
     
+    Alert alert = new Alert(AlertType.INFORMATION);
+  
+    @FXML
+    private void handleMenuHelpManual(ActionEvent event) { 
+        Alert manual = getAlert();
+    }
+    
+    public Alert getAlert(){
+        alert.setTitle("User Manual");
+        alert.setHeaderText("2-D Projectile Simulator");
+        alert.setHeight(900);
+        alert.setWidth(1050);
+         String contentText = """
+            This Java program is a simulator designed to replicate 2-D projectile motion, allowing you to visualize and analyze the behavior of an object influenced by gravity and initial velocity.
+            It serves as an interactive tool for exploring key physics concepts, offering both educational value and hands-on experimentation.
+            -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+            Parameter Adjustments
+
+            The simulation begins by defining key parameters under the "Parameter Adjustments" section. You can input the following variables in the designated text fields:
+
+            Initial Velocity (Vertical and Horizontal): Define the starting speed in both axes.
+            Initial Height: Specify the object's launch height.
+            Gravitational Acceleration: Set the acceleration due to gravity affecting the object's motion.
+
+            Ensure all fields are completed accurately before proceeding to the controls.
+            -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+            Simulation Controls
+
+            Under the "Controls" section, you can interact with the simulation using the following options:
+
+            Start/Stop: Begin or pause the simulation.
+            Reset: Restart the simulation to its initial state.
+            Advance/Rewind: Move forward or backward to a specific point in the trajectory (if applicable).
+            -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+            Dynamic Readings
+
+            As the simulation progresses, three real-time readings are displayed at the bottom of the screen:
+
+            Horizontal Displacement: The distance traveled along the x-axis.
+            Vertical Displacement: The height relative to the initial position.
+            Elapsed Time: The total time since the simulation began.
+
+            Below these readings, you can change the units for displaying these values to suit your preferences.
+            -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+            Graphical Analysis
+
+            To the right of the readings, the "Graphical Analysis" button allows you to switch to a new scene featuring four line graphs. 
+            These graphs plot the following functions over time, based on the most recent input:
+
+            Velocity (Y-axis)
+            Velocity (X-axis)
+            Displacement (Y-axis)
+            Displacement (X-axis)
+                              
+            You can return to the simulation by pressing the "Projectile Motion Simulation" button at the bottom of the scene.
+        """;
+
+        String[] keywords = { "Parameter Adjustments", "Simulation Controls", "Dynamic Readings", "Graphical Analysis", "Projectile Motion Simulation" };
+
+        TextFlow textFlow = new TextFlow();
+        for (String paragraph : contentText.split("\n\n")) {
+            for (String keyword : keywords) {
+                if (paragraph.contains(keyword)) {
+                    paragraph = paragraph.replace(keyword, "\0" + keyword + "\0");
+                }
+            }
+            for (String part : paragraph.split("\0")) {
+                Text text = new Text(part);
+                if (arrayContains(keywords, part)) {
+                    text.setStyle("-fx-font-weight: bold;");
+                }
+                textFlow.getChildren().add(text);
+            }
+            textFlow.getChildren().add(new Text("\n\n")); 
+        }
+
+        alert.getDialogPane().setContent(textFlow);
+
+        alert.showAndWait();
+        return alert;
+    }
+
+    private boolean arrayContains(String[] array, String value) {
+        for (String item : array) {
+            if (item.equals(value)) {
+                return true;
+            }
+        }
+        return false;
+    }
+   
+    @FXML
+    private void handleMenuEditTheme(ActionEvent event) {
+        List<String> themes = new ArrayList<>();
+        themes.add("Default");
+        themes.add("Gray");
+        themes.add("Blue");
+
+        ChoiceDialog<String> dialog = new ChoiceDialog<>("Default", themes);
+        dialog.setTitle("Theme Editor");
+        dialog.setHeaderText("Theme Selction");
+        dialog.setContentText("Choose your preferred theme:");
+        Optional<String> result = dialog.showAndWait();
+        result.ifPresent(selection -> {
+            switch (selection) {
+                case "Default" -> {
+                    Color D = Color.web("d4d4d4");
+                    Color B = Color.web("1c8cec");
+                    ParamRec.setFill(D);
+                    ControlsRec.setFill(D);
+                    BotLeftRec.setFill(D);
+                    VerticalDisRec.setFill(D);
+                    HorizontalDisRec.setFill(D);
+                    TimeRec.setFill(D);
+                    BotRightRec.setFill(D);
+                    VVelocityRec.setFill(B);
+                    HVelocityRec.setFill(B);
+                    GravAccRec.setFill(B);
+                    HeightRec.setFill(B);
+                    EnterTimeRec.setFill(B);
+                }
+                case "Gray" -> {
+                    Color D = Color.web("d4d4d4");
+                    ParamRec.setFill(D);
+                    ControlsRec.setFill(D);
+                    BotLeftRec.setFill(D);
+                    VerticalDisRec.setFill(D);
+                    HorizontalDisRec.setFill(D);
+                    TimeRec.setFill(D);
+                    BotRightRec.setFill(D);
+                    VVelocityRec.setFill(Color.GRAY);
+                    HVelocityRec.setFill(Color.GRAY);
+                    GravAccRec.setFill(Color.GRAY);
+                    HeightRec.setFill(Color.GRAY);
+                    EnterTimeRec.setFill(Color.GRAY);
+
+                }
+                case "Blue" -> {
+                    Color B = Color.web("1c8cec");
+                    ParamRec.setFill(Color.SKYBLUE);
+                    ControlsRec.setFill(Color.SKYBLUE);
+                    BotLeftRec.setFill(Color.SKYBLUE);
+                    VerticalDisRec.setFill(Color.SKYBLUE);
+                    HorizontalDisRec.setFill(Color.SKYBLUE);
+                    TimeRec.setFill(Color.SKYBLUE);
+                    BotRightRec.setFill(Color.SKYBLUE);
+                    VVelocityRec.setFill(B);
+                    HVelocityRec.setFill(B);
+                    GravAccRec.setFill(B);
+                    HeightRec.setFill(B);
+                    EnterTimeRec.setFill(B);
+                }
+                default -> {
+                    Color D = Color.web("d4d4d4");
+                    Color B = Color.web("1c8cec");
+                    ParamRec.setFill(D);
+                    ControlsRec.setFill(D);
+                    BotLeftRec.setFill(D);
+                    VerticalDisRec.setFill(D);
+                    HorizontalDisRec.setFill(D);
+                    TimeRec.setFill(D);
+                    BotRightRec.setFill(D);
+                    VVelocityRec.setFill(B);
+                    HVelocityRec.setFill(B);
+                    GravAccRec.setFill(B);
+                    HeightRec.setFill(B);
+                    EnterTimeRec.setFill(B);
+                }
+            }
+        });
+    }
 }

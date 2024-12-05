@@ -2,30 +2,29 @@ package com.vanier.TermProject;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import com.vanier.TermProject.model.Physics;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Data;
 import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
-import javafx.stage.Stage;
-
 
 public class TermProjectFXMLSecondaryController implements Initializable {
 
@@ -65,6 +64,12 @@ public class TermProjectFXMLSecondaryController implements Initializable {
     private LineChart<String, Number> Graph2;
     @FXML
     private LineChart<String, Number> Graph3;
+    @FXML
+    private MenuItem MenuFileClose2;
+    @FXML
+    private MenuItem MenuEditTheme2;
+    @FXML
+    private MenuItem MenuHelpManual2;
    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -100,6 +105,56 @@ public class TermProjectFXMLSecondaryController implements Initializable {
     @FXML
     private void handGraphBtnSecond(ActionEvent event) throws IOException {
     	TermProject.setRoot("TermProjectFXMLMain");
+    }
+
+    @FXML
+    private void handleMenuFileClose2(ActionEvent event) {
+        Platform.exit();
+    }
+
+    @FXML
+    private void handleMenuEditTheme2(ActionEvent event) {
+            List<String> themes = new ArrayList<>();
+        themes.add("Default");
+        themes.add("Gray");
+        themes.add("Blue");
+
+        ChoiceDialog<String> dialog = new ChoiceDialog<>("Default", themes);
+        dialog.setTitle("Theme Editor");
+        dialog.setHeaderText("Theme Selction");
+        dialog.setContentText("Choose your preferred theme:");
+        Optional<String> result = dialog.showAndWait();
+        result.ifPresent(selection -> {
+            switch (selection) {
+                case "Default" -> {
+                    Color D = Color.web("d4d4d4");
+                    BotLeftRecSecond.setFill(D);
+                    BotRightRecSecond.setFill(D);
+                }
+                case "Gray" -> {
+                    Color D = Color.web("d4d4d4");
+                    BotLeftRecSecond.setFill(D);
+                    BotRightRecSecond.setFill(D);
+                }
+                case "Blue" -> {
+                   BotLeftRecSecond.setFill(Color.SKYBLUE);
+                   BotRightRecSecond.setFill(Color.SKYBLUE);
+                }
+                default -> {
+                    Color D = Color.web("d4d4d4");
+                    BotLeftRecSecond.setFill(D);
+                    BotRightRecSecond.setFill(D);
+                }
+            }
+        });
+    }
+
+    TermProjectFXMLController FXML = new TermProjectFXMLController();
+    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+    
+    @FXML
+    private void handleMenuHelpManual2(ActionEvent event) {
+       Alert manual = FXML.getAlert();
     }
     
 }

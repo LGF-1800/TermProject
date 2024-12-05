@@ -66,18 +66,14 @@ public class Physics {
 	
 	private static volatile Physics instance;
 
-	private Physics() {
+	Physics() {
 		timeline = new Timeline(new KeyFrame(Duration.millis(1), event -> {
 			updatePosition();
 			setElapsedTime(getElapsedTime() + 0.001);
-			if (hasTheObjectLanded())
+			if (calculateY(getElapsedTime()) == 0 && getElapsedTime() > 0)
 				timeline.stop();
 		}));
 		timeline.setCycleCount(Timeline.INDEFINITE);
-	}
-
-	private boolean hasTheObjectLanded() {
-		return calculateY(getElapsedTime()) == 0 && getElapsedTime() > 0;
 	}
 
 	public static Physics getInstance() {
@@ -93,16 +89,8 @@ public class Physics {
 
 
 	public void updatePosition() {
-		object.setLayoutX(getCurrentCenterOfObjectX());
-		object.setLayoutY(getCurrentCenterOfObjectY());
-	}
-
-	public double getCurrentCenterOfObjectX() {
-		return calculateX(getElapsedTime()) + getObjectWidth()/2;
-	}
-
-	public double getCurrentCenterOfObjectY() {
-		return calculateY(getElapsedTime()) + getObjectHeight()/2;
+		object.setLayoutX(calculateX(getElapsedTime()) + getObjectWidth()/2);
+		object.setLayoutY(calculateY(getElapsedTime()) + getObjectHeight()/2);
 	}
 
 	public double getObjectHeight() {
@@ -139,23 +127,23 @@ public class Physics {
 	}
 
 	public double calculateX(double time) {
-	    System.out.println("Debugging calculateX:");
-	    System.out.println("startHorizontalVelocity: " + startHorizontalVelocity);
-	    System.out.println("elapsedTime: " + time);
+	    System.out.println("Debugging Calculate X:");
+	    System.out.println("Initial Horizontal Velocity: " + startHorizontalVelocity);
+	    System.out.println("Elapsed Time: " + time);
 	    
 	    double result = startHorizontalVelocity * time;
-	    System.out.println("Calculated X position: " + result);
+	    System.out.println("Calculated X Position: " + result);
 	    
 	    return result;
 	}
 
 
 	public double calculateY(double time) {
-	    System.out.println("Debugging calculateY:");
-	    System.out.println("startHeight: " + startHeight);
-	    System.out.println("startVerticalVelocity: " + startVerticalVelocity);
-	    System.out.println("gravitationAcceleration: " + gravitationAcceleration);
-	    System.out.println("elapsedTime: " + time);
+	    System.out.println("Debugging Calculate Y:");
+	    System.out.println("Initial Height: " + startHeight);
+	    System.out.println("Initial Vertical Velocity: " + startVerticalVelocity);
+	    System.out.println("Gravitational Acceleration: " + gravitationAcceleration);
+	    System.out.println("Elapsed Time: " + time);
 
 	    double result = startHeight + (startVerticalVelocity * time) - (0.5 * gravitationAcceleration * time * time);
 	    if (result < 0)
@@ -167,50 +155,48 @@ public class Physics {
 
 
 	public double getStartHorizontalVelocity() {
-	    System.out.println("Getting startHorizontalVelocity: " + startHorizontalVelocity);
+	    System.out.println("Getting Initial Horizontal Velocity: " + startHorizontalVelocity);
 	    return startHorizontalVelocity;
 	}
 
 	public void setStartHorizontalVelocity(double startHorizontalVelocity) {
-	    System.out.println("Setting startHorizontalVelocity: " + startHorizontalVelocity);
+	    System.out.println("Setting Initial Horizontal Velocity: " + startHorizontalVelocity);
 	    this.startHorizontalVelocity = startHorizontalVelocity;
 	}
 
 	public double getStartVerticalVelocity() {
-	    System.out.println("Getting startVerticalVelocity: " + startVerticalVelocity);
+	    System.out.println("Getting Initial Vertical Velocity: " + startVerticalVelocity);
 	    return startVerticalVelocity;
 	}
 
 	public void setStartVerticalVelocity(double startVerticalVelocity) {
-	    System.out.println("Setting startVerticalVelocity: " + startVerticalVelocity);
+	    System.out.println("Setting Initial Vertical Velocity: " + startVerticalVelocity);
 	    this.startVerticalVelocity = startVerticalVelocity;
 	}
 
 	public double getStartHeight() {
-	    System.out.println("Getting startHeight: " + startHeight);
+	    System.out.println("Getting Initial Height: " + startHeight);
 	    return startHeight;
 	}
 
 	public void setStartHeight(double startHeight) {
-	    System.out.println("Setting startHeight: " + startHeight);
+	    System.out.println("Setting Initial Height: " + startHeight);
 	    this.startHeight = startHeight;
 	}
 
 	public double getGravitationAcceleration() {
-	    System.out.println("Getting gravitationAcceleration: " + gravitationAcceleration);
+	    System.out.println("Getting Gravitational Acceleration: " + gravitationAcceleration);
 	    return gravitationAcceleration;
 	}
 
 	public void setGravitationAcceleration(double gravitationAcceleration) {
-	    System.out.println("Setting gravitationAcceleration: " + gravitationAcceleration);
+	    System.out.println("Setting Gravitational Acceleration: " + gravitationAcceleration);
 	    this.gravitationAcceleration = gravitationAcceleration;
 	}
 
 	public void play() {
-		if (!hasTheObjectLanded()) {
-			// TODO Auto-generated method stub
-			timeline.play();
-		}
+		// TODO Auto-generated method stub
+		timeline.play();
 	}
 
 	public void pause() {

@@ -6,7 +6,7 @@ import javafx.animation.Timeline;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 
-@Deprecated
+
 public class TimelineWrapper {
 
 	private Circle circle;
@@ -33,10 +33,7 @@ public class TimelineWrapper {
 		
 		Timeline timeline = new Timeline();
 		for (double time = 0; time <= timeOfFlight; time += timeStep) {
-			double finalTime = time;//compiler complains so i have to make a separate variable
-//			KeyValue xKeyValue = new KeyValue(circle.translateXProperty(), (hVelocity * time) * scale);
-//			KeyValue yKeyValue = new KeyValue(circle.translateYProperty(), ((vVelocity * time) - (0.5 * gravity * time * time)) * scale);
-//			KeyFrame keyFrame = new KeyFrame(Duration.seconds(time), xKeyValue, yKeyValue);
+			double finalTime = time;
 			KeyFrame keyFrame = new KeyFrame(Duration.seconds(time), event -> updatePosition(finalTime));
 			
 			timeline .getKeyFrames().add(keyFrame);
@@ -54,19 +51,4 @@ public class TimelineWrapper {
 		circle.setTranslateX(xTranslation * scale);
 		circle.setTranslateY(yTranslation * scale); 
 	}
-	
-//	public void play() {
-//        timeline.play();
-//    }
-//	
-//	public void pause() {
-//        timeline.pause();
-//    }
-//
-//	public void reset() {
-//		// TODO Auto-generated method stub
-//		timeline.pause();
-//		timeline.jumpTo(Duration.ZERO);
-//	}
-	
 }
